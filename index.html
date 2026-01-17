@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JADU LMS: guided tracks, practical courses, interactive exams, and a helpful developer community.">
+    <title>JADU LMS — Learn Faster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg: #010618;
+            --surface: #071122;
+            --surface2: #0F1A33;
+            --elevated: #182235;
+            --text: #F0F3F8;
+            --text2: #C8D0DD;
+            --muted: #8A93A4;
+            --border: rgba(255,255,255,0.08);
+            --border2: rgba(255,255,255,0.14);
+            --brand: #00A0F0;
+            --brandHover: #19B2FF;
+            --brandSoft: rgba(0,160,240,0.16);
+            --heroGlow: radial-gradient(60% 60% at 50% 0%, rgba(0,160,240,0.20) 0%, rgba(1,6,24,0) 60%);
+            --footerGlow: radial-gradient(50% 50% at 50% 100%, rgba(0,160,240,0.10) 0%, rgba(1,6,24,0) 65%);
+            --cardGradient: linear-gradient(135deg, rgba(7,17,34,0.8) 0%, rgba(15,26,51,0.6) 100%);
+            --glowShadow: 0 0 0 1px rgba(0,160,240,0.1), 0 4px 32px rgba(0,160,240,0.05);
+            --hoverGlow: 0 0 0 1px rgba(0,160,240,0.3), 0 8px 64px rgba(0,160,240,0.15);
+        }
+
+        .floating-badge {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-badge:nth-child(odd) {
+            animation-delay: -3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .gradient-border {
+            background: var(--cardGradient);
+            border: 1px solid var(--border);
+            box-shadow: var(--glowShadow);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gradient-border:hover {
+            background: linear-gradient(135deg, rgba(7,17,34,0.95) 0%, rgba(15,26,51,0.8) 100%);
+            border-color: var(--brand);
+            box-shadow: var(--hoverGlow);
+            transform: translateY(-4px);
+        }
+
+        .shine-effect {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .shine-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .shine-effect:hover::before {
+            left: 100%;
+        }
+
+        .shine-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,160,240,0.2);
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 1px rgba(0,160,240,0.25), 0 20px 60px rgba(0,160,240,0.08); }
+            50% { box-shadow: 0 0 0 1px rgba(0,160,240,0.4), 0 20px 80px rgba(0,160,240,0.15); }
+        }
+
+        .testimonial-card {
+            min-height: 200px;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.5s ease;
+        }
+
+        .testimonial-card.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .roadmap-step {
+            position: relative;
+        }
+
+        .roadmap-step::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--brand), transparent);
+            transform: translateX(-50%);
+        }
+
+        .roadmap-step:last-child::before {
+            display: none;
+        }
+
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .card-hover::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, transparent, rgba(0,160,240,0.3), transparent);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: xor;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 160, 240, 0.3), 0 0 0 1px rgba(0,160,240,0.2);
+        }
+
+        .card-hover:hover::after {
+            opacity: 1;
+        }
+
+        .loading-bar {
+            height: 3px;
+            background: linear-gradient(90deg, var(--brand), var(--brandHover));
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[var(--bg)] text-[var(--text)] antialiased overflow-x-hidden">
+    <!-- Loading Bar -->
+    <div class="loading-bar fixed top-0 left-0 w-full z-50"></div>
+
+    <!-- Hero Glow Background -->
+    <div class="hero-glow pointer-events-none absolute inset-x-0 top-0 h-[520px]" style="background: var(--heroGlow);"></div>
+
+    <!-- Navbar -->
+    <nav id="nav" class="navbar sticky top-0 z-40 bg-[var(--bg)]/70 backdrop-blur border-b border-white/5">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Brand -->
+                <a href="#" class="brand-logo text-xl font-bold text-[var(--text)]">JADU LMS</a>
+                
+                <!-- Desktop Navigation -->
+                <div class="nav-links hidden md:flex items-center gap-8">
+                    <a href="#courses" class="nav-link text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Courses</a>
+                    <a href="#instructors" class="nav-link text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Instructors</a>
+                    <a href="#exams" class="nav-link text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Exams</a>
+                    <a href="#community" class="nav-link text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Community</a>
+                    <a href="#pricing" class="nav-link text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Pricing</a>
+                </div>
+
+                <!-- Desktop Actions -->
+                <div class="nav-actions hidden md:flex items-center gap-4">
+                    <a href="#login" class="btn-ghost shine-effect inline-flex items-center justify-center font-medium transition rounded-full bg-transparent text-[var(--text2)] hover:text-[var(--text)] hover:bg-white/5 h-9 px-4 text-sm">Log in</a>
+                    <a href="#pricing" class="btn-primary shine-effect inline-flex items-center justify-center font-medium transition rounded-full bg-[var(--brand)] text-[var(--bg)] hover:bg-[var(--brandHover)] h-9 px-4 text-sm">Start Learning</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 text-[var(--text2)] hover:text-[var(--text)]">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden pb-4 border-t border-white/5 mt-2 pt-4">
+                <div class="flex flex-col gap-4">
+                    <a href="#courses" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Courses</a>
+                    <a href="#instructors" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Instructors</a>
+                    <a href="#exams" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Exams</a>
+                    <a href="#community" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Community</a>
+                    <a href="#pricing" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Pricing</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section relative pt-20 md:pt-32 pb-20 md:pb-32 min-h-screen flex items-center">
+        <div class="max-w-7xl mx-auto px-6 relative z-10 w-full">
+            <div class="text-center max-w-5xl mx-auto">
+                <!-- Kicker -->
+                <div class="hero-kicker inline-flex items-center rounded-full px-6 py-3 text-sm font-semibold border border-white/20 bg-gradient-to-r from-white/10 to-white/5 text-[var(--text2)] mb-12 opacity-0 backdrop-blur-sm">
+                    <span class="mr-2 text-lg">✨</span>
+                    Learn faster with guided tracks
+                </div>
+                
+                <!-- Headline -->
+                <h1 class="hero-headline text-6xl md:text-7xl lg:text-8xl font-black mb-8 text-[var(--text)] opacity-0 leading-[0.9] tracking-tight">
+                    The best way to learn on 
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand)] via-[var(--brandHover)] to-cyan-400 animate-pulse">JADU LMS</span>
+                </h1>
+                
+                <!-- Subheadline -->
+                <p class="hero-subheadline text-2xl md:text-3xl text-[var(--text2)] mb-16 opacity-0 max-w-4xl mx-auto leading-relaxed font-light">
+                    Follow structured learning paths, build real projects, and validate your skills with interactive exams — all in one modern learning platform.
+                </p>
+                
+                <!-- CTAs -->
+                <div class="hero-ctas flex flex-col sm:flex-row gap-6 justify-center mb-16 opacity-0">
+                    <a href="#pricing" class="btn-primary-large shine-effect inline-flex items-center justify-center font-semibold transition rounded-full bg-gradient-to-r from-[var(--brand)] to-[var(--brandHover)] text-white hover:from-[var(--brandHover)] hover:to-cyan-400 h-16 px-10 text-xl shadow-lg shadow-[var(--brand)]/25">
+                        Start Learning
+                        <svg class="ml-3 w-6 h-6 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                    <a href="#courses" class="btn-secondary-large shine-effect inline-flex items-center justify-center font-semibold transition rounded-full bg-white/10 backdrop-blur-sm text-[var(--text)] hover:bg-white/20 border border-white/20 hover:border-white/40 h-16 px-10 text-xl">
+                        Browse Courses
+                    </a>
+                </div>
+                
+                <!-- Trust Line -->
+                <p class="hero-trust text-lg text-[var(--muted)] opacity-0 font-medium">
+                    Trusted by <span class="text-[var(--text2)] font-semibold">10,000+</span> teams and independent learners worldwide.
+                </p>
+            </div>
+
+            <!-- Floating Badges -->
+            <div class="floating-elements absolute inset-0 pointer-events-none">
+                <div class="floating-badge absolute top-20 left-[10%] w-16 h-16 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brandHover)] opacity-20 blur-sm"></div>
+                <div class="floating-badge absolute top-40 right-[15%] w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 opacity-20 blur-sm"></div>
+                <div class="floating-badge absolute bottom-40 left-[20%] w-14 h-14 rounded-full bg-gradient-to-br from-green-500 to-blue-500 opacity-20 blur-sm"></div>
+                <div class="floating-badge absolute bottom-60 right-[10%] w-10 h-10 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 opacity-20 blur-sm"></div>
+                <div class="floating-badge absolute top-60 left-[5%] w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-pink-500 opacity-20 blur-sm"></div>
+                <div class="floating-badge absolute top-80 right-[25%] w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 opacity-20 blur-sm"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="courses-section py-16 md:py-24 relative z-10">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--surface)]/20 to-transparent pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <!-- Header -->
+            <div class="section-header text-center mb-20">
+                <div class="section-eyebrow inline-flex items-center rounded-full px-6 py-3 text-sm font-semibold border border-white/20 bg-gradient-to-r from-white/10 to-white/5 text-[var(--text2)] mb-8 backdrop-blur-sm">
+                    📚 Library
+                </div>
+                <h2 class="section-title text-5xl md:text-6xl lg:text-7xl font-black mb-8 text-[var(--text)] leading-tight tracking-tight">
+                    Binge on an endless collection of 
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand)] to-purple-400">programming courses</span>
+                </h2>
+                <p class="section-subtitle text-2xl md:text-3xl text-[var(--text2)] max-w-4xl mx-auto leading-relaxed font-light">
+                    Short, practical lessons. Clear projects. Real outcomes.
+                </p>
+            </div>
+
+            <!-- Filters -->
+            <div class="course-filters flex flex-wrap justify-center gap-4 mb-16">
+                <button data-filter="all" class="filter-btn active px-8 py-4 text-base font-semibold rounded-full border border-[var(--brand)] bg-gradient-to-r from-[var(--brand)] to-[var(--brandHover)] text-white shadow-lg shadow-[var(--brand)]/25 transition-all duration-300">
+                    All Courses
+                </button>
+                <button data-filter="backend" class="filter-btn px-8 py-4 text-base font-semibold rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[var(--text)] hover:text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300">
+                    Backend
+                </button>
+                <button data-filter="frontend" class="filter-btn px-8 py-4 text-base font-semibold rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[var(--text)] hover:text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300">
+                    Frontend
+                </button>
+                <button data-filter="devops" class="filter-btn px-8 py-4 text-base font-semibold rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[var(--text)] hover:text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300">
+                    DevOps
+                </button>
+                <button data-filter="ai" class="filter-btn px-8 py-4 text-base font-semibold rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[var(--text)] hover:text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300">
+                    AI
+                </button>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="courses-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Course Card 1 -->
+                <div class="course-card card-hover gradient-border rounded-3xl p-8 group" data-tag="backend">
+                    <div class="course-icon mb-6">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"></path>
+                            </svg>
+                        </div>
+                        <div class="course-tag inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold border border-orange-500/20 bg-orange-500/10 text-orange-300">
+                            Backend
+                        </div>
+                    </div>
+                    <h3 class="course-title text-2xl font-bold mb-4 text-[var(--text)] group-hover:text-white transition-colors">Modern Backend Foundations</h3>
+                    <p class="course-meta text-sm text-[var(--muted)] mb-4 font-medium">Track • 24 lessons • 8 hours</p>
+                    <p class="course-description text-base text-[var(--text2)] mb-8 leading-relaxed">APIs, auth, queues, and testing — start strong and ship confidently with modern backend practices.</p>
+                    <a href="#course-backend" class="course-cta inline-flex items-center text-base font-semibold text-[var(--brand)] hover:text-[var(--brandHover)] transition-all group-hover:translate-x-2">
+                        View Track 
+                        <svg class="ml-2 w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Course Card 2 -->
+                <div class="course-card card-hover gradient-border rounded-3xl p-8 group" data-tag="frontend">
+                    <div class="course-icon mb-6">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                        </div>
+                        <div class="course-tag inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold border border-blue-500/20 bg-blue-500/10 text-blue-300">
+                            Frontend
+                        </div>
+                    </div>
+                    <h3 class="course-title text-2xl font-bold mb-4 text-[var(--text)] group-hover:text-white transition-colors">Frontend for Busy Developers</h3>
+                    <p class="course-meta text-sm text-[var(--muted)] mb-4 font-medium">Track • 18 lessons • 6 hours</p>
+                    <p class="course-description text-base text-[var(--text2)] mb-8 leading-relaxed">Components, state, forms, and performance — with practical patterns that work.</p>
+                    <a href="#course-frontend" class="course-cta inline-flex items-center text-base font-semibold text-[var(--brand)] hover:text-[var(--brandHover)] transition-all group-hover:translate-x-2">
+                        View Track 
+                        <svg class="ml-2 w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Course Card 3 -->
+                <div class="course-card card-hover gradient-border rounded-3xl p-8 group" data-tag="devops">
+                    <div class="course-icon mb-6">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                            </svg>
+                        </div>
+                        <div class="course-tag inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold border border-green-500/20 bg-green-500/10 text-green-300">
+                            DevOps
+                        </div>
+                    </div>
+                    <h3 class="course-title text-2xl font-bold mb-4 text-[var(--text)] group-hover:text-white transition-colors">DevOps Essentials</h3>
+                    <p class="course-meta text-sm text-[var(--muted)] mb-4 font-medium">Track • 16 lessons • 5 hours</p>
+                    <p class="course-description text-base text-[var(--text2)] mb-8 leading-relaxed">CI/CD, containers, monitoring, and deployments made approachable.</p>
+                    <a href="#course-devops" class="course-cta inline-flex items-center text-base font-semibold text-[var(--brand)] hover:text-[var(--brandHover)] transition-all group-hover:translate-x-2">
+                        View Track 
+                        <svg class="ml-2 w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Course Card 4 -->
+                <div class="course-card card-hover gradient-border rounded-3xl p-8 group" data-tag="ai">
+                    <div class="course-icon mb-6">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <div class="course-tag inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold border border-purple-500/20 bg-purple-500/10 text-purple-300">
+                            AI
+                        </div>
+                    </div>
+                    <h3 class="course-title text-2xl font-bold mb-4 text-[var(--text)] group-hover:text-white transition-colors">AI for Product Builders</h3>
+                    <p class="course-meta text-sm text-[var(--muted)] mb-4 font-medium">Track • 20 lessons • 7 hours</p>
+                    <p class="course-description text-base text-[var(--text2)] mb-8 leading-relaxed">Prompting, evaluation, RAG basics, and shipping AI features responsibly.</p>
+                    <a href="#course-ai" class="course-cta inline-flex items-center text-base font-semibold text-[var(--brand)] hover:text-[var(--brandHover)] transition-all group-hover:translate-x-2">
+                        View Track 
+                        <svg class="ml-2 w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Roadmap Section -->
+    <section id="roadmap" class="roadmap-section py-16 md:py-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="section-header text-center mb-16">
+                <div class="section-eyebrow inline-flex items-center rounded-full px-4 py-2 text-sm font-medium border border-white/10 bg-white/5 text-[var(--text2)] mb-6">
+                    Roadmap
+                </div>
+                <h2 class="section-title text-4xl md:text-5xl font-bold mb-6 text-[var(--text)]">
+                    Your journey to mastery
+                </h2>
+                <p class="section-subtitle text-xl text-[var(--text2)] max-w-2xl mx-auto">
+                    Follow our structured path from beginner to expert developer.
+                </p>
+            </div>
+
+            <div class="roadmap-steps grid grid-cols-1 md:grid-cols-5 gap-8">
+                <div class="roadmap-step text-center">
+                    <div class="roadmap-icon w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brandHover)] flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h3 class="roadmap-title text-lg font-semibold mb-2 text-[var(--text)]">Foundations</h3>
+                    <p class="roadmap-description text-sm text-[var(--text2)]">Learn the basics and build your first projects</p>
+                </div>
+
+                <div class="roadmap-step text-center">
+                    <div class="roadmap-icon w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="roadmap-title text-lg font-semibold mb-2 text-[var(--text)]">Development</h3>
+                    <p class="roadmap-description text-sm text-[var(--text2)]">Master frameworks and advanced patterns</p>
+                </div>
+
+                <div class="roadmap-step text-center">
+                    <div class="roadmap-icon w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="roadmap-title text-lg font-semibold mb-2 text-[var(--text)]">Testing</h3>
+                    <p class="roadmap-description text-sm text-[var(--text2)]">Write reliable, maintainable code</p>
+                </div>
+
+                <div class="roadmap-step text-center">
+                    <div class="roadmap-icon w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="roadmap-title text-lg font-semibold mb-2 text-[var(--text)]">Deployment</h3>
+                    <p class="roadmap-description text-sm text-[var(--text2)]">Ship your applications to production</p>
+                </div>
+
+                <div class="roadmap-step text-center">
+                    <div class="roadmap-icon w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="roadmap-title text-lg font-semibold mb-2 text-[var(--text)]">Mastery</h3>
+                    <p class="roadmap-description text-sm text-[var(--text2)]">Become a senior developer and mentor</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instructors Section -->
+    <section id="instructors" class="instructors-section py-16 md:py-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="section-header text-center mb-16">
+                <div class="section-eyebrow inline-flex items-center rounded-full px-4 py-2 text-sm font-medium border border-white/10 bg-white/5 text-[var(--text2)] mb-6">
+                    Instructors
+                </div>
+                <h2 class="section-title text-4xl md:text-5xl font-bold mb-6 text-[var(--text)]">
+                    Taught by expert developers with real-world experience
+                </h2>
+                <p class="section-subtitle text-xl text-[var(--text2)] max-w-2xl mx-auto">
+                    Clear explanations, practical examples, and opinionated best practices.
+                </p>
+            </div>
+
+            <div class="instructors-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8">
+                <div class="instructor-card text-center group">
+                    <div class="instructor-avatar relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&h=128&fit=crop" alt="Instructor One" class="w-20 h-20 rounded-full border-2 border-white/10 object-cover mx-auto transition-transform group-hover:scale-110">
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brandHover)] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </div>
+                    <h3 class="instructor-name text-sm font-semibold text-[var(--text)] mb-1">Instructor One</h3>
+                    <p class="instructor-role text-xs text-[var(--muted)]">Backend</p>
+                </div>
+
+                <div class="instructor-card text-center group">
+                    <div class="instructor-avatar relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop" alt="Instructor Two" class="w-20 h-20 rounded-full border-2 border-white/10 object-cover mx-auto transition-transform group-hover:scale-110">
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brandHover)] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </div>
+                    <h3 class="instructor-name text-sm font-semibold text-[var(--text)] mb-1">Instructor Two</h3>
+                    <p class="instructor-role text-xs text-[var(--muted)]">Frontend</p>
+                </div>
+
+                <div class="instructor-card text-center group">
+                    <div class="instructor-avatar relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=128&h=128&fit=crop" alt="Instructor Three" class="w-20 h-20 rounded-full border-2 border-white/10 object-cover mx-auto transition-transform group-hover:scale-110">
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brandHover)] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </div>
+                    <h3 class="instructor-name text-sm font-semibold text-[var(--text)] mb-1">Instructor Three</h3>
+                    <p class="instructor-role text-xs text-[var(--muted)]">DevOps</p>
+                </div>
+
+                <div class="instructor-card text-center group">
+                    <div class="instructor-avatar relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=128&h=128&fit=crop" alt="Instructor Four" class="w-20 h-20 rounded-full border-2 border-white/10 object-cover mx-auto transition-transform group-hover:scale-110">
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brandHover)] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </div>
+                    <h3 class="instructor-name text-sm font-semibold text-[var(--text)] mb-1">Instructor Four</h3>
+                    <p class="instructor-role text-xs text-[var(--muted)]">Mobile</p>
+                </div>
+
+                <div class="instructor-card text-center group">
+                    <div class="instructor-avatar relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&h=128&fit=crop" alt="Instructor Five" class="w-20 h-20 rounded-full border-2 border-white/10 object-cover mx-auto transition-transform group-hover:scale-110">
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brandHover)] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </div>
+                    <h3 class="instructor-name text-sm font-semibold text-[var(--text)] mb-1">Instructor Five</h3>
+                    <p class="instructor-role text-xs text-[var(--muted)]">AI</p>
+                </div>
+
+                <div class="instructor-card text-center group">
+                    <div class="instructor-avatar relative mb-4">
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=128&h=128&fit=crop" alt="Instructor Six" class="w-20 h-20 rounded-full border-2 border-white/10 object-cover mx-auto transition-transform group-hover:scale-110">
+                        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[var(--brand)] to-[var(--brandHover)] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </div>
+                    <h3 class="instructor-name text-sm font-semibold text-[var(--text)] mb-1">Instructor Six</h3>
+                    <p class="instructor-role text-xs text-[var(--muted)]">Data</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section py-16 md:py-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="section-header text-center mb-16">
+                <div class="section-eyebrow inline-flex items-center rounded-full px-4 py-2 text-sm font-medium border border-white/10 bg-white/5 text-[var(--text2)] mb-6">
+                    Testimonials
+                </div>
+                <h2 class="section-title text-4xl md:text-5xl font-bold mb-6 text-[var(--text)]">
+                    What our students say
+                </h2>
+                <p class="section-subtitle text-xl text-[var(--text2)] max-w-2xl mx-auto">
+                    Real feedback from developers who transformed their careers.
+                </p>
+            </div>
+
+            <div class="testimonials-carousel relative">
+                <div class="testimonials-container overflow-hidden">
+                    <div class="testimonials-track flex transition-transform duration-500 ease-in-out">
+                        <!-- Testimonial 1 -->
+                        <div class="testimonial-card active w-full flex-shrink-0 px-4">
+                            <div class="gradient-border rounded-3xl bg-[var(--surface)]/70 backdrop-blur p-8 text-center">
+                                <div class="testimonial-avatar mb-6">
+                                    <img src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=80&h=80&fit=crop" alt="Sarah Chen" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-white/10">
+                                </div>
+                                <blockquote class="testimonial-quote text-lg text-[var(--text2)] mb-6 leading-relaxed">
+                                    "JADU LMS completely changed my career trajectory. The structured tracks and real-world projects gave me the confidence to land my dream job as a senior developer."
+                                </blockquote>
+                                <div class="testimonial-author">
+                                    <p class="text-[var(--text)] font-semibold">Sarah Chen</p>
+                                    <p class="text-[var(--muted)] text-sm">Senior Full-Stack Developer at Stripe</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 2 -->
+                        <div class="testimonial-card w-full flex-shrink-0 px-4">
+                            <div class="gradient-border rounded-3xl bg-[var(--surface)]/70 backdrop-blur p-8 text-center">
+                                <div class="testimonial-avatar mb-6">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop" alt="Marcus Johnson" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-white/10">
+                                </div>
+                                <blockquote class="testimonial-quote text-lg text-[var(--text2)] mb-6 leading-relaxed">
+                                    "The interactive exams and community support made learning enjoyable. I went from zero to deploying production apps in just 6 months."
+                                </blockquote>
+                                <div class="testimonial-author">
+                                    <p class="text-[var(--text)] font-semibold">Marcus Johnson</p>
+                                    <p class="text-[var(--muted)] text-sm">DevOps Engineer at GitHub</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 3 -->
+                        <div class="testimonial-card w-full flex-shrink-0 px-4">
+                            <div class="gradient-border rounded-3xl bg-[var(--surface)]/70 backdrop-blur p-8 text-center">
+                                <div class="testimonial-avatar mb-6">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop" alt="Emily Rodriguez" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-white/10">
+                                </div>
+                                <blockquote class="testimonial-quote text-lg text-[var(--text2)] mb-6 leading-relaxed">
+                                    "The quality of instruction is unmatched. Every course is practical, up-to-date, and taught by industry experts who actually know what they're talking about."
+                                </blockquote>
+                                <div class="testimonial-author">
+                                    <p class="text-[var(--text)] font-semibold">Emily Rodriguez</p>
+                                    <p class="text-[var(--muted)] text-sm">Frontend Lead at Vercel</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carousel Controls -->
+                <div class="testimonials-controls flex justify-center mt-8 gap-2">
+                    <button class="carousel-dot w-3 h-3 rounded-full bg-[var(--brand)] opacity-100 transition-opacity"></button>
+                    <button class="carousel-dot w-3 h-3 rounded-full bg-white/20 opacity-50 transition-opacity"></button>
+                    <button class="carousel-dot w-3 h-3 rounded-full bg-white/20 opacity-50 transition-opacity"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exams Section -->
+    <section id="exams" class="exams-section py-16 md:py-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="section-header text-center mb-16">
+                <div class="section-eyebrow inline-flex items-center rounded-full px-4 py-2 text-sm font-medium border border-white/10 bg-white/5 text-[var(--text2)] mb-6">
+                    Exams
+                </div>
+                <h2 class="section-title text-4xl md:text-5xl font-bold mb-6 text-[var(--text)]">
+                    Put your learning to the test with interactive exams
+                </h2>
+                <p class="section-subtitle text-xl text-[var(--text2)] max-w-2xl mx-auto">
+                    Practice in a real editor-like environment and get instant feedback.
+                </p>
+            </div>
+
+            <div class="exam-demo max-w-4xl mx-auto mb-12">
+                <div class="exam-card gradient-border rounded-3xl bg-black/30 overflow-hidden">
+                    <div class="exam-header flex items-center justify-between px-6 py-4 border-b border-white/10">
+                        <div class="flex items-center gap-4">
+                            <span class="exam-title text-lg font-medium text-[var(--text)]">Sample Exam</span>
+                            <span class="exam-badge inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-white/10 bg-white/5 text-[var(--text2)]">
+                                Interactive
+                            </span>
+                        </div>
+                        <div class="exam-language inline-flex items-center rounded-full px-4 py-2 text-sm font-medium border border-white/10 bg-white/5 text-[var(--text2)]">
+                            PHP
+                        </div>
+                    </div>
+                    <div class="exam-code p-6 font-mono text-sm text-[var(--text2)] leading-relaxed">
+<span class="text-[var(--muted)]">// Example: validate input and return a clean response</span>
+<span class="text-purple-400">function</span> <span class="text-blue-400">storeUser</span>(<span class="text-orange-400">array</span> <span class="text-green-400">$data</span>) {
+  <span class="text-[var(--muted)]">// validate, persist, return</span>
+  <span class="text-purple-400">return</span> [<span class="text-yellow-400">'ok'</span> => <span class="text-blue-400">true</span>];
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="#exam-sample" class="btn-primary-large shine-effect inline-flex items-center justify-center font-medium transition rounded-full bg-[var(--brand)] text-[var(--bg)] hover:bg-[var(--brandHover)] h-14 px-8 text-lg">
+                    Try a sample exam
+                    <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section id="community" class="community-section py-16 md:py-24 relative z-10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="section-header text-center mb-16">
+                <div class="section-eyebrow inline-flex items-center rounded-full px-4 py-2 text-sm font-medium border border-white/10 bg-white/5 text-[var(--text2)] mb-6">
+                    Community
+                </div>
+                <h2 class="section-title text-4xl md:text-5xl font-bold mb-6 text-[var(--text)]">
+                    If you get stuck, our community is here to help
+                </h2>
+                <p class="section-subtitle text-xl text-[var(--text2)] max-w-2xl mx-auto">
+                    Ask questions, share progress, and learn together — with helpful moderation.
+                </p>
+            </div>
+
+            <div class="community-grid grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <div class="community-card gradient-border rounded-3xl bg-[var(--surface)]/60 p-8">
+                    <h3 class="community-title text-xl font-semibold mb-6 text-[var(--text)]">Latest discussions</h3>
+                    <div class="community-items space-y-4">
+                        <div class="community-item py-4 border-b border-white/5 last:border-b-0">
+                            <p class="item-title text-sm font-semibold text-[var(--text)] mb-2">Best way to structure a course project?</p>
+                            <p class="item-meta text-xs text-[var(--muted)]">2h ago • 18 replies</p>
+                        </div>
+                        <div class="community-item py-4 border-b border-white/5 last:border-b-0">
+                            <p class="item-title text-sm font-semibold text-[var(--text)] mb-2">How do you review PRs efficiently?</p>
+                            <p class="item-meta text-xs text-[var(--muted)]">6h ago • 9 replies</p>
+                        </div>
+                        <div class="community-item py-4 border-b border-white/5 last:border-b-0">
+                            <p class="item-title text-sm font-semibold text-[var(--text)] mb-2">Recommended roadmap for juniors?</p>
+                            <p class="item-meta text-xs text-[var(--muted)]">1d ago • 31 replies</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="community-card gradient-border rounded-3xl bg-[var(--surface)]/60 p-8">
+                    <h3 class="community-title text-xl font-semibold mb-6 text-[var(--text)]">Top answers</h3>
+                    <div class="community-items space-y-4">
+                        <div class="community-item py-4 border-b border-white/5 last:border-b-0">
+                            <p class="item-title text-sm font-semibold text-[var(--text)] mb-2">Debugging checklist for production issues</p>
+                            <p class="item-meta text-xs text-[var(--muted)]">Pinned • 120 upvotes</p>
+                        </div>
+                        <div class="community-item py-4 border-b border-white/5 last:border-b-0">
+                            <p class="item-title text-sm font-semibold text-[var(--text)] mb-2">Clean architecture without over-engineering</p>
+                            <p class="item-meta text-xs text-[var(--muted)]">86 upvotes</p>
+                        </div>
+                        <div class="community-item py-4 border-b border-white/5 last:border-b-0">
+                            <p class="item-title text-sm font-semibold text-[var(--text)] mb-2">Testing strategy for fast-moving teams</p>
+                            <p class="item-meta text-xs text-[var(--muted)]">74 upvotes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="#signup" class="btn-secondary-large shine-effect inline-flex items-center justify-center font-medium transition rounded-full bg-white/10 text-[var(--text)] hover:bg-white/15 h-14 px-8 text-lg">
+                    Join the community
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section py-16 md:py-24 relative z-10">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--surface)]/30 to-transparent pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="section-header text-center mb-20">
+                <div class="section-eyebrow inline-flex items-center rounded-full px-6 py-3 text-sm font-semibold border border-white/20 bg-gradient-to-r from-white/10 to-white/5 text-[var(--text2)] mb-8 backdrop-blur-sm">
+                    💰 Pricing
+                </div>
+                <h2 class="section-title text-5xl md:text-6xl lg:text-7xl font-black mb-8 text-[var(--text)] leading-tight tracking-tight">
+                    Insert coin to 
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand)] to-green-400">continue</span>
+                </h2>
+                <p class="section-subtitle text-2xl md:text-3xl text-[var(--text2)] max-w-4xl mx-auto leading-relaxed font-light">
+                    Pick a plan that fits how you learn. Cancel anytime.
+                </p>
+            </div>
+
+            <div class="pricing-grid grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <!-- Starter Plan -->
+                <div class="pricing-card gradient-border rounded-3xl bg-[var(--surface)]/70 backdrop-blur p-8">
+                    <div class="plan-header mb-8">
+                        <h3 class="plan-name text-2xl font-semibold mb-4 text-[var(--text)]">Starter</h3>
+                        <div class="plan-price mb-4">
+                            <span class="price-amount text-4xl font-bold text-[var(--text)]">$0</span>
+                            <span class="price-period text-[var(--muted)]">/mo</span>
+                        </div>
+                        <p class="plan-description text-[var(--text2)]">Explore a limited selection of courses and community access.</p>
+                    </div>
+                    <ul class="plan-features space-y-4 mb-8">
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Limited course library</span>
+                        </li>
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Community access</span>
+                        </li>
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Basic progress tracking</span>
+                        </li>
+                    </ul>
+                    <a href="#signup" class="plan-cta shine-effect inline-flex items-center justify-center font-medium transition rounded-full bg-white/10 text-[var(--text)] hover:bg-white/15 h-12 px-6 text-base w-full">
+                        Get started
+                    </a>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="pricing-card pro-plan pulse-glow rounded-3xl p-10 ring-2 ring-[var(--brand)] relative transform scale-105 bg-gradient-to-b from-[var(--surface)]/90 to-[var(--surface2)]/90 backdrop-blur-xl">
+                    <div class="plan-badge absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="inline-flex items-center rounded-full px-6 py-2 text-sm font-bold bg-gradient-to-r from-[var(--brand)] to-[var(--brandHover)] text-white shadow-lg shadow-[var(--brand)]/50">
+                            ⭐ Most Popular
+                        </span>
+                    </div>
+                    <div class="plan-header mb-10">
+                        <h3 class="plan-name text-3xl font-black mb-6 text-[var(--text)]">Pro</h3>
+                        <div class="plan-price mb-6">
+                            <span class="price-amount text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand)] to-[var(--brandHover)]">$19</span>
+                            <span class="price-period text-xl text-[var(--muted)] font-medium">/mo</span>
+                        </div>
+                        <p class="plan-description text-xl text-[var(--text2)] font-medium leading-relaxed">Full library, tracks, exams, and certificates.</p>
+                    </div>
+                    <ul class="plan-features space-y-4 mb-8">
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Unlimited courses</span>
+                        </li>
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Guided tracks</span>
+                        </li>
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Interactive exams</span>
+                        </li>
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Certificates</span>
+                        </li>
+                    </ul>
+                    <a href="#pricing-pro" class="plan-cta shine-effect inline-flex items-center justify-center font-medium transition rounded-full bg-[var(--brand)] text-[var(--bg)] hover:bg-[var(--brandHover)] h-12 px-6 text-base w-full">
+                        Go Pro
+                    </a>
+                </div>
+
+                <!-- Team Plan -->
+                <div class="pricing-card gradient-border rounded-3xl bg-[var(--surface)]/70 backdrop-blur p-8">
+                    <div class="plan-header mb-8">
+                        <h3 class="plan-name text-2xl font-semibold mb-4 text-[var(--text)]">Team</h3>
+                        <div class="plan-price mb-4">
+                            <span class="price-amount text-4xl font-bold text-[var(--text)]">$49</span>
+                            <span class="price-period text-[var(--muted)]">/mo</span>
+                        </div>
+                        <p class="plan-description text-[var(--text2)]">Team analytics, assignments, and admin controls.</p>
+                    </div>
+                    <ul class="plan-features space-y-4 mb-8">
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Seat management</span>
+                        </li>
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Assignments</span>
+                        </li>
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Team analytics</span>
+                        </li>
+                        <li class="feature-item flex items-start">
+                            <svg class="w-5 h-5 text-[var(--brand)] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-[var(--text2)]">Priority support</span>
+                        </li>
+                    </ul>
+                    <a href="#pricing-team" class="plan-cta shine-effect inline-flex items-center justify-center font-medium transition rounded-full bg-white/10 text-[var(--text)] hover:bg-white/15 h-12 px-6 text-base w-full">
+                        Start a team
+                    </a>
+                </div>
+            </div>
+
+            <p class="text-center text-sm text-[var(--muted)]">
+                Prices shown are examples — replace with your real billing configuration.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-section pt-20 pb-12 border-t border-white/5 relative">
+        <!-- Footer Glow Background -->
+        <div class="pointer-events-none absolute inset-x-0 bottom-0 h-[380px]" style="background: var(--footerGlow);"></div>
+        
+        <div class="max-w-6xl mx-auto px-4 relative z-10">
+            <div class="footer-content grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <!-- Brand Column -->
+                <div class="footer-brand">
+                    <h4 class="text-xl font-bold mb-4 text-[var(--text)]">JADU LMS</h4>
+                    <p class="text-sm text-[var(--text2)] mb-6 leading-relaxed">
+                        The modern learning platform for developers who want to level up their skills.
+                    </p>
+                    <div class="social-links flex gap-4">
+                        <a href="#" class="social-link w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[var(--text2)] hover:text-[var(--text)] hover:bg-white/15 transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[var(--text2)] hover:text-[var(--text)] hover:bg-white/15 transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-[var(--text2)] hover:text-[var(--text)] hover:bg-white/15 transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.347-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-12C24.007 5.367 18.641.001 12.017.001z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product Column -->
+                <div class="footer-column">
+                    <h4 class="text-sm font-semibold mb-4 text-[var(--text)]">Product</h4>
+                    <ul class="footer-links space-y-3">
+                        <li><a href="#courses" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Courses</a></li>
+                        <li><a href="#tracks" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Tracks</a></li>
+                        <li><a href="#exams" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Exams</a></li>
+                        <li><a href="#certificates" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Certificates</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Column -->
+                <div class="footer-column">
+                    <h4 class="text-sm font-semibold mb-4 text-[var(--text)]">Company</h4>
+                    <ul class="footer-links space-y-3">
+                        <li><a href="#about" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">About</a></li>
+                        <li><a href="#careers" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Careers</a></li>
+                        <li><a href="#blog" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Blog</a></li>
+                        <li><a href="#changelog" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Changelog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support Column -->
+                <div class="footer-column">
+                    <h4 class="text-sm font-semibold mb-4 text-[var(--text)]">Support</h4>
+                    <ul class="footer-links space-y-3">
+                        <li><a href="#help" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Help Center</a></li>
+                        <li><a href="#contact" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Contact</a></li>
+                        <li><a href="#status" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Status</a></li>
+                        <li><a href="#privacy" class="text-sm text-[var(--text2)] hover:text-[var(--text)] transition">Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom pt-8 border-t border-white/5">
+                <p class="text-sm text-[var(--muted)] text-center">© 2024 JADU LMS. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Page loading animation
+        window.addEventListener('load', () => {
+            gsap.to('.loading-bar', {
+                scaleX: 1,
+                duration: 0.8,
+                ease: 'power2.out',
+                onComplete: () => {
+                    gsap.to('.loading-bar', {
+                        opacity: 0,
+                        duration: 0.3,
+                        delay: 0.2
+                    });
+                }
+            });
+        });
+
+        // Hero animations
+        const heroTl = gsap.timeline({ delay: 0.5 });
+
+        heroTl
+            .to('.hero-kicker', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out'
+            })
+            .to('.hero-headline', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power2.out'
+            }, '-=0.4')
+            .to('.hero-subheadline', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out'
+            }, '-=0.6')
+            .to('.hero-ctas', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out'
+            }, '-=0.4')
+            .to('.hero-trust', {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: 'power2.out'
+            }, '-=0.4');
+
+        // Floating elements animation
+        gsap.to('.floating-elements .floating-badge', {
+            y: -20,
+            rotation: 5,
+            duration: 6,
+            ease: 'power1.inOut',
+            yoyo: true,
+            repeat: -1,
+            stagger: {
+                each: 1,
+                from: 'random'
+            }
+        });
+
+        // Section reveal animations (play once)
+        gsap.utils.toArray('.section-header').forEach(header => {
+            gsap.fromTo(header.children, {
+                opacity: 0,
+                y: 50
+            }, {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: header,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none none'
+                }
+            });
+        });
+
+        // Course cards stagger animation (play once)
+        gsap.fromTo('.course-card', {
+            opacity: 0,
+            y: 50,
+            scale: 0.9
+        }, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.courses-grid',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none none'
+            }
+        });
+
+        // Roadmap steps animation (play once)
+        gsap.fromTo('.roadmap-step', {
+            opacity: 0,
+            y: 30
+        }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.roadmap-steps',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none none'
+            }
+        });
+
+        // Instructors animation (play once)
+        gsap.fromTo('.instructor-card', {
+            opacity: 0,
+            scale: 0.8
+        }, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: 'back.out(1.7)',
+            scrollTrigger: {
+                trigger: '.instructors-grid',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none none'
+            }
+        });
+
+        // Community cards animation (play once)
+        gsap.fromTo('.community-card', {
+            opacity: 0,
+            x: -50
+        }, {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.community-grid',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none none'
+            }
+        });
+
+        // Pricing cards animation (play once)
+        gsap.fromTo('.pricing-card', {
+            opacity: 0,
+            y: 50
+        }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.pricing-grid',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none none'
+            }
+        });
+
+        // Exam demo animation (play once)
+        gsap.fromTo('.exam-demo', {
+            opacity: 0,
+            scale: 0.95
+        }, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.exam-demo',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none none'
+            }
+        });
+
+        // Footer animation (play once)
+        gsap.fromTo('.footer-content > *', {
+            opacity: 0,
+            y: 30
+        }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.footer-content',
+                start: 'top 90%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none none'
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Course filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const courseCards = document.querySelectorAll('.course-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.className = 'filter-btn px-8 py-4 text-base font-semibold rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[var(--text)] hover:text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300';
+                });
+
+                // Add active class to clicked button
+                button.classList.add('active');
+                button.className = 'filter-btn active px-8 py-4 text-base font-semibold rounded-full border border-[var(--brand)] bg-gradient-to-r from-[var(--brand)] to-[var(--brandHover)] text-white shadow-lg shadow-[var(--brand)]/25 transition-all duration-300';
+
+                // Get filter value
+                const filter = button.getAttribute('data-filter');
+
+                // Animate cards out then in
+                gsap.to(courseCards, {
+                    opacity: 0,
+                    y: 20,
+                    duration: 0.3,
+                    stagger: 0.05,
+                    onComplete: () => {
+                        // Show/hide cards based on filter
+                        courseCards.forEach(card => {
+                            if (filter === 'all' || card.getAttribute('data-tag') === filter) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+
+                        // Animate visible cards back in
+                        const visibleCards = Array.from(courseCards).filter(card => card.style.display !== 'none');
+                        gsap.fromTo(visibleCards, {
+                            opacity: 0,
+                            y: 20
+                        }, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.4,
+                            stagger: 0.1,
+                            ease: 'power2.out'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Testimonials carousel
+        let currentTestimonial = 0;
+        const testimonialCards = document.querySelectorAll('.testimonial-card');
+        const carouselDots = document.querySelectorAll('.carousel-dot');
+        const testimonialsTrack = document.querySelector('.testimonials-track');
+
+        function showTestimonial(index) {
+            // Update track position
+            gsap.to(testimonialsTrack, {
+                x: -index * 100 + '%',
+                duration: 0.5,
+                ease: 'power2.inOut'
+            });
+
+            // Update dots
+            carouselDots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.add('bg-[var(--brand)]', 'opacity-100');
+                    dot.classList.remove('bg-white/20', 'opacity-50');
+                } else {
+                    dot.classList.remove('bg-[var(--brand)]', 'opacity-100');
+                    dot.classList.add('bg-white/20', 'opacity-50');
+                }
+            });
+
+            // Update active testimonial
+            testimonialCards.forEach((card, i) => {
+                if (i === index) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+
+            currentTestimonial = index;
+        }
+
+        // Carousel dot click handlers
+        carouselDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => showTestimonial(index));
+        });
+
+        // Auto-advance testimonials
+        setInterval(() => {
+            const nextIndex = (currentTestimonial + 1) % testimonialCards.length;
+            showTestimonial(nextIndex);
+        }, 5000);
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        ScrollTrigger.create({
+            trigger: 'body',
+            start: 'top -100',
+            end: 'bottom bottom',
+            onUpdate: self => {
+                if (self.direction === 1 && self.progress > 0.1) {
+                    gsap.to('.navbar', {
+                        backgroundColor: 'rgba(1, 6, 24, 0.95)',
+                        backdropFilter: 'blur(20px)',
+                        duration: 0.3
+                    });
+                } else if (self.direction === -1 && self.progress < 0.1) {
+                    gsap.to('.navbar', {
+                        backgroundColor: 'rgba(1, 6, 24, 0.7)',
+                        backdropFilter: 'blur(10px)',
+                        duration: 0.3
+                    });
+                }
+            }
+        });
+
+        // Parallax effect for hero glow
+        gsap.to('.hero-glow', {
+            yPercent: -50,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.hero-section',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
+
+        // Enhanced button hover animations
+        document.querySelectorAll('.shine-effect').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, {
+                    scale: 1.05,
+                    duration: 0.4,
+                    ease: 'back.out(1.7)'
+                });
+            });
+
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, {
+                    scale: 1,
+                    duration: 0.4,
+                    ease: 'back.out(1.7)'
+                });
+            });
+        });
+
+        // Enhanced card hover effects
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    y: -12,
+                    scale: 1.02,
+                    duration: 0.4,
+                    ease: 'back.out(1.7)'
+                });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    y: 0,
+                    scale: 1,
+                    duration: 0.4,
+                    ease: 'back.out(1.7)'
+                });
+            });
+        });
+
+        // Filter button enhanced interactions
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                if (!button.classList.contains('active')) {
+                    gsap.to(button, {
+                        scale: 1.05,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                }
+            });
+
+            button.addEventListener('mouseleave', () => {
+                if (!button.classList.contains('active')) {
+                    gsap.to(button, {
+                        scale: 1,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+{
+    "meta": {
+      "projectName": "JADU LMS",
+      "target": "html+tailwind",
+      "output": {
+        "files": ["index.html", "styles.css (optional)"],
+        "approach": "single-page marketing homepage"
+      }
+    },
+    "design": {
+      "cssVariables": {
+        ":root": {
+          "--bg": "#010618",
+          "--surface": "#071122",
+          "--surface2": "#0F1A33",
+          "--elevated": "#182235",
+          "--text": "#F0F3F8",
+          "--text2": "#C8D0DD",
+          "--muted": "#8A93A4",
+          "--border": "rgba(255,255,255,0.08)",
+          "--border2": "rgba(255,255,255,0.14)",
+          "--brand": "#00A0F0",
+          "--brandHover": "#19B2FF",
+          "--brandSoft": "rgba(0,160,240,0.16)",
+          "--heroGlow": "radial-gradient(60% 60% at 50% 0%, rgba(0,160,240,0.20) 0%, rgba(1,6,24,0) 60%)",
+          "--footerGlow": "radial-gradient(50% 50% at 50% 100%, rgba(0,160,240,0.10) 0%, rgba(1,6,24,0) 65%)"
+        }
+      },
+      "tailwindDefaults": {
+        "body": "bg-[var(--bg)] text-[var(--text)] antialiased",
+        "container": "max-w-6xl mx-auto px-4",
+        "sectionY": "py-16 md:py-24",
+        "card": "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur",
+        "cardHover": "hover:border-[var(--border2)] hover:bg-[var(--surface)]/85 transition",
+        "badge": "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium border border-white/10 bg-white/5 text-[var(--text2)]",
+        "btnBase": "inline-flex items-center justify-center font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent rounded-full",
+        "btnPrimary": "bg-[var(--brand)] text-[var(--bg)] hover:bg-[var(--brandHover)] focus:ring-[var(--brand)]",
+        "btnSecondary": "bg-white/10 text-[var(--text)] hover:bg-white/15 focus:ring-white/25",
+        "btnGhost": "bg-transparent text-[var(--text2)] hover:text-[var(--text)] hover:bg-white/5",
+        "btnSm": "h-9 px-4 text-sm",
+        "btnMd": "h-11 px-6 text-sm md:text-base",
+        "btnLg": "h-12 px-7 text-base"
+      }
+    },
+    "assets": {
+      "brand": {
+        "name": "JADU LMS",
+        "logo": {
+          "type": "text",
+          "text": "JADU LMS",
+          "iconHint": "graduation-cap"
+        }
+      },
+      "placeholders": {
+        "heroRingIcons": [
+          "/assets/badges/b1.png",
+          "/assets/badges/b2.png",
+          "/assets/badges/b3.png",
+          "/assets/badges/b4.png",
+          "/assets/badges/b5.png",
+          "/assets/badges/b6.png",
+          "/assets/badges/b7.png",
+          "/assets/badges/b8.png"
+        ],
+        "instructors": [
+          { "name": "Instructor One", "role": "Backend", "img": "/assets/instructors/i1.jpg" },
+          { "name": "Instructor Two", "role": "Frontend", "img": "/assets/instructors/i2.jpg" },
+          { "name": "Instructor Three", "role": "DevOps", "img": "/assets/instructors/i3.jpg" },
+          { "name": "Instructor Four", "role": "Mobile", "img": "/assets/instructors/i4.jpg" },
+          { "name": "Instructor Five", "role": "AI", "img": "/assets/instructors/i5.jpg" },
+          { "name": "Instructor Six", "role": "Data", "img": "/assets/instructors/i6.jpg" }
+        ]
+      }
+    },
+    "pageSpec": {
+      "document": {
+        "title": "JADU LMS — Learn Faster",
+        "lang": "en",
+        "meta": {
+          "description": "JADU LMS: guided tracks, practical courses, interactive exams, and a helpful developer community."
+        }
+      },
+      "layout": {
+        "backgroundEffects": [
+          {
+            "type": "absoluteGradient",
+            "className": "pointer-events-none absolute inset-x-0 top-0 h-[520px]",
+            "style": { "background": "var(--heroGlow)" }
+          }
+        ],
+        "root": {
+          "className": "min-h-screen bg-[var(--bg)] text-[var(--text)]"
+        }
+      },
+      "sections": [
+        {
+          "id": "nav",
+          "type": "Navbar",
+          "props": {
+            "sticky": true,
+            "containerClass": "max-w-6xl mx-auto px-4",
+            "className": "bg-[var(--bg)]/70 backdrop-blur border-b border-white/5",
+            "brand": { "text": "JADU LMS" },
+            "links": [
+              { "label": "Courses", "href": "#courses" },
+              { "label": "Instructors", "href": "#instructors" },
+              { "label": "Exams", "href": "#exams" },
+              { "label": "Community", "href": "#community" },
+              { "label": "Pricing", "href": "#pricing" }
+            ],
+            "actions": [
+              { "label": "Log in", "href": "#login", "variant": "ghost", "size": "sm" },
+              { "label": "Start Learning", "href": "#pricing", "variant": "primary", "size": "sm" }
+            ],
+            "mobileMenu": true
+          }
+        },
+        {
+          "id": "hero",
+          "type": "HeroCentered",
+          "props": {
+            "containerClass": "max-w-6xl mx-auto px-4",
+            "className": "pt-10 md:pt-16 pb-10 md:pb-16",
+            "kicker": "Learn faster with guided tracks",
+            "headline": "The best way to learn on JADU LMS",
+            "subheadline": "Follow structured learning paths, build real projects, and validate your skills with interactive exams — all in one modern learning platform.",
+            "ctas": [
+              { "label": "Start Learning", "href": "#pricing", "variant": "primary", "size": "lg" },
+              { "label": "Browse Courses", "href": "#courses", "variant": "secondary", "size": "lg" }
+            ],
+            "trustLine": "Trusted by teams and independent learners worldwide.",
+            "decorations": {
+              "ring": {
+                "enabled": true,
+                "items": [
+                  { "img": "/assets/badges/b1.png", "alt": "Badge 1" },
+                  { "img": "/assets/badges/b2.png", "alt": "Badge 2" },
+                  { "img": "/assets/badges/b3.png", "alt": "Badge 3" },
+                  { "img": "/assets/badges/b4.png", "alt": "Badge 4" },
+                  { "img": "/assets/badges/b5.png", "alt": "Badge 5" },
+                  { "img": "/assets/badges/b6.png", "alt": "Badge 6" },
+                  { "img": "/assets/badges/b7.png", "alt": "Badge 7" },
+                  { "img": "/assets/badges/b8.png", "alt": "Badge 8" }
+                ],
+                "layoutHint": "Place small circular icons around hero, low opacity, responsive (hide some on mobile)."
+              }
+            }
+          }
+        },
+        {
+          "id": "courses",
+          "type": "SectionCardsGrid",
+          "props": {
+            "anchorId": "courses",
+            "containerClass": "max-w-6xl mx-auto px-4",
+            "sectionClass": "py-16 md:py-24",
+            "header": {
+              "eyebrow": "Library",
+              "title": "Binge on an endless collection of programming courses",
+              "subtitle": "Short, practical lessons. Clear projects. Real outcomes."
+            },
+            "filters": {
+              "enabled": true,
+              "items": ["All", "Backend", "Frontend", "DevOps", "AI", "Databases"],
+              "default": "All"
+            },
+            "gridClass": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8",
+            "cards": [
+              {
+                "title": "Modern Backend Foundations",
+                "meta": "Track • 24 lessons",
+                "tag": "Backend",
+                "description": "APIs, auth, queues, and testing — start strong and ship confidently.",
+                "cta": { "label": "View Track", "href": "#course-backend" }
+              },
+              {
+                "title": "Frontend for Busy Developers",
+                "meta": "Track • 18 lessons",
+                "tag": "Frontend",
+                "description": "Components, state, forms, and performance — with practical patterns.",
+                "cta": { "label": "View Track", "href": "#course-frontend" }
+              },
+              {
+                "title": "DevOps Essentials",
+                "meta": "Track • 16 lessons",
+                "tag": "DevOps",
+                "description": "CI/CD, containers, monitoring, and deployments made approachable.",
+                "cta": { "label": "View Track", "href": "#course-devops" }
+              },
+              {
+                "title": "AI for Product Builders",
+                "meta": "Track • 20 lessons",
+                "tag": "AI",
+                "description": "Prompting, evaluation, RAG basics, and shipping AI features responsibly.",
+                "cta": { "label": "View Track", "href": "#course-ai" }
+              }
+            ],
+            "cardStyle": {
+              "baseClass": "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur p-5",
+              "hoverClass": "hover:border-[var(--border2)] hover:bg-[var(--surface)]/85 transition"
+            }
+          }
+        },
+        {
+          "id": "instructors",
+          "type": "SectionAvatarGrid",
+          "props": {
+            "anchorId": "instructors",
+            "containerClass": "max-w-6xl mx-auto px-4",
+            "sectionClass": "py-16 md:py-24",
+            "header": {
+              "eyebrow": "Instructors",
+              "title": "Taught by expert developers with real-world experience",
+              "subtitle": "Clear explanations, practical examples, and opinionated best practices."
+            },
+            "gridClass": "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 md:gap-8",
+            "items": [
+              { "name": "Instructor One", "role": "Backend", "img": "/assets/instructors/i1.jpg" },
+              { "name": "Instructor Two", "role": "Frontend", "img": "/assets/instructors/i2.jpg" },
+              { "name": "Instructor Three", "role": "DevOps", "img": "/assets/instructors/i3.jpg" },
+              { "name": "Instructor Four", "role": "Mobile", "img": "/assets/instructors/i4.jpg" },
+              { "name": "Instructor Five", "role": "AI", "img": "/assets/instructors/i5.jpg" },
+              { "name": "Instructor Six", "role": "Data", "img": "/assets/instructors/i6.jpg" }
+            ],
+            "itemStyle": {
+              "imgClass": "h-16 w-16 rounded-full border border-white/10 object-cover mx-auto",
+              "nameClass": "mt-3 text-sm font-semibold text-center",
+              "roleClass": "mt-1 text-xs text-[var(--muted)] text-center"
+            }
+          }
+        },
+        {
+          "id": "exams",
+          "type": "SectionCodeFeature",
+          "props": {
+            "anchorId": "exams",
+            "containerClass": "max-w-6xl mx-auto px-4",
+            "sectionClass": "py-16 md:py-24",
+            "header": {
+              "eyebrow": "Exams",
+              "title": "Put your learning to the test with interactive exams",
+              "subtitle": "Practice in a real editor-like environment and get instant feedback."
+            },
+            "featureCard": {
+              "layout": "centered",
+              "cardClass": "rounded-2xl border border-white/10 bg-black/30 overflow-hidden",
+              "headerClass": "flex items-center justify-between px-4 py-3 border-b border-white/10",
+              "headerLeft": { "label": "Sample Exam", "badge": "Interactive" },
+              "headerRight": { "label": "PHP", "hint": "language pill" },
+              "code": {
+                "language": "php",
+                "codeClass": "p-4 font-mono text-sm text-[var(--text2)] whitespace-pre overflow-auto",
+                "lines": [
+                  "// Example: validate input and return a clean response",
+                  "function storeUser(array $data) {",
+                  "  // validate, persist, return",
+                  "  return ['ok' => true];",
+                  "}"
+                ]
+              }
+            },
+            "cta": { "label": "Try a sample exam", "href": "#exam-sample", "variant": "primary", "size": "md" }
+          }
+        },
+        {
+          "id": "community",
+          "type": "SectionTwoColumnFeed",
+          "props": {
+            "anchorId": "community",
+            "containerClass": "max-w-6xl mx-auto px-4",
+            "sectionClass": "py-16 md:py-24",
+            "header": {
+              "eyebrow": "Community",
+              "title": "If you get stuck, our community is here to help",
+              "subtitle": "Ask questions, share progress, and learn together — with helpful moderation."
+            },
+            "gridClass": "grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8",
+            "columns": [
+              {
+                "title": "Latest discussions",
+                "items": [
+                  { "title": "Best way to structure a course project?", "meta": "2h ago • 18 replies" },
+                  { "title": "How do you review PRs efficiently?", "meta": "6h ago • 9 replies" },
+                  { "title": "Recommended roadmap for juniors?", "meta": "1d ago • 31 replies" }
+                ]
+              },
+              {
+                "title": "Top answers",
+                "items": [
+                  { "title": "Debugging checklist for production issues", "meta": "Pinned • 120 upvotes" },
+                  { "title": "Clean architecture without over-engineering", "meta": "86 upvotes" },
+                  { "title": "Testing strategy for fast-moving teams", "meta": "74 upvotes" }
+                ]
+              }
+            ],
+            "listStyle": {
+              "cardClass": "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/60 p-5",
+              "itemClass": "py-3 border-b border-white/5 last:border-b-0",
+              "titleClass": "text-sm font-semibold",
+              "metaClass": "text-xs text-[var(--muted)] mt-1"
+            },
+            "cta": { "label": "Join the community", "href": "#signup", "variant": "secondary", "size": "md" }
+          }
+        },
+        {
+          "id": "pricing",
+          "type": "SectionPricing",
+          "props": {
+            "anchorId": "pricing",
+            "containerClass": "max-w-6xl mx-auto px-4",
+            "sectionClass": "py-16 md:py-24",
+            "header": {
+              "eyebrow": "Pricing",
+              "title": "Insert coin to continue",
+              "subtitle": "Pick a plan that fits how you learn. Cancel anytime."
+            },
+            "gridClass": "grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8",
+            "plans": [
+              {
+                "name": "Starter",
+                "price": "$0",
+                "period": "/mo",
+                "description": "Explore a limited selection of courses and community access.",
+                "features": ["Limited course library", "Community access", "Basic progress tracking"],
+                "cta": { "label": "Get started", "href": "#signup", "variant": "secondary", "size": "md" },
+                "highlight": false
+              },
+              {
+                "name": "Pro",
+                "price": "$19",
+                "period": "/mo",
+                "description": "Full library, tracks, exams, and certificates.",
+                "features": ["Unlimited courses", "Guided tracks", "Interactive exams", "Certificates"],
+                "cta": { "label": "Go Pro", "href": "#pricing-pro", "variant": "primary", "size": "md" },
+                "highlight": true,
+                "highlightStyle": "ring-1 ring-[var(--brand)] shadow-[0_0_0_1px_rgba(0,160,240,0.25),0_20px_60px_rgba(0,160,240,0.08)]"
+              },
+              {
+                "name": "Team",
+                "price": "$49",
+                "period": "/mo",
+                "description": "Team analytics, assignments, and admin controls.",
+                "features": ["Seat management", "Assignments", "Team analytics", "Priority support"],
+                "cta": { "label": "Start a team", "href": "#pricing-team", "variant": "secondary", "size": "md" },
+                "highlight": false
+              }
+            ],
+            "finePrint": "Prices shown are examples — replace with your real billing configuration."
+          }
+        },
+        {
+          "id": "footer",
+          "type": "FooterMultiColumn",
+          "props": {
+            "containerClass": "max-w-6xl mx-auto px-4",
+            "className": "pt-16 pb-10 border-t border-white/5 relative",
+            "backgroundEffect": {
+              "type": "absoluteGradient",
+              "className": "pointer-events-none absolute inset-x-0 bottom-0 h-[380px]",
+              "style": { "background": "var(--footerGlow)" }
+            },
+            "columns": [
+              {
+                "title": "JADU LMS",
+                "links": [
+                  { "label": "About", "href": "#about" },
+                  { "label": "Careers", "href": "#careers" },
+                  { "label": "Changelog", "href": "#changelog" }
+                ]
+              },
+              {
+                "title": "Product",
+                "links": [
+                  { "label": "Courses", "href": "#courses" },
+                  { "label": "Tracks", "href": "#tracks" },
+                  { "label": "Exams", "href": "#exams" }
+                ]
+              },
+              {
+                "title": "Support",
+                "links": [
+                  { "label": "Help Center", "href": "#help" },
+                  { "label": "Contact", "href": "#contact" },
+                  { "label": "Status", "href": "#status" }
+                ]
+              }
+            ],
+            "bottomLine": "© JADU LMS. All rights reserved."
+          }
+        }
+      ],
+      "generationRules": {
+        "tailwind": {
+          "useCDN": true,
+          "configNote": "Use a small <style> block to define :root CSS variables and any custom utilities."
+        },
+        "interactivity": {
+          "allowed": ["navbar mobile menu toggle", "course filter tabs (client-side show/hide)"],
+          "noFramework": true,
+          "jsStyle": "vanilla"
+        },
+        "responsiveness": {
+          "breakpoints": ["sm", "md", "lg"],
+          "priority": "mobile-first"
+        },
+        "consistency": [
+          "Use the same card styles for course cards, community boxes, and pricing cards.",
+          "Keep generous vertical spacing and soft borders.",
+          "Buttons should be pill-shaped everywhere."
+        ]
+      }
+    }
+  }
+  
